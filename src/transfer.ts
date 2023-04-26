@@ -1,7 +1,7 @@
 import { AptosAccount, AptosClient, CoinClient, FaucetClient } from 'aptos';
 
 import { TESTNET_FAUCET_URL, TESTNET_NODE_URL } from 'config';
-import { loadAccount } from 'load-acc';
+import { loadAccount } from 'utils';
 
 const main = async () => {
   const client = new AptosClient(TESTNET_NODE_URL);
