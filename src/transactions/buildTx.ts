@@ -19,18 +19,26 @@ const {
   TransactionPayloadEntryFunction,
 } = TxnBuilderTypes;
 
-const main = async () => {
-  const client = new AptosClient(TESTNET_NODE_URL);
-  const faucetClient = new FaucetClient(TESTNET_NODE_URL, TESTNET_FAUCET_URL);
-  const account = loadAccount();
-
+const getAccountBalance = async (
+  client: AptosClient,
+  account: AptosAccount
+) => {
   const resources = await client.getAccountResources(account.address());
   const aptosCoinResource = resources.find((r) => r.type === aptosCoinStore);
   const resourceData = aptosCoinResource?.data as any;
-  const balance = parseInt(resourceData.coin.value, 10);
+  return parseInt(resourceData.coin.value, 10);
+};
 
+const main = async () => {
+  const client = new AptosClient(TESTNET_NODE_URL);
+  const faucetClient = new FaucetClient(TESTNET_NODE_URL, TESTNET_FAUCET_URL);
+
+  const account = loadAccount();
   const account2 = new AptosAccount();
   await faucetClient.fundAccount(account2.address(), 0);
+
+  console.log(`acc 1: ${await getAccountBalance(client, account)}`);
+  console.log(`acc 2: ${await getAccountBalance(client, account2)}`);
 
   // create tx payload
   const token = new TypeTagStruct(
@@ -82,6 +90,9 @@ const main = async () => {
   // send
   const res = await client.submitSignedBCSTransaction(bcsTx);
   await client.waitForTransaction(res.hash);
+
+  console.log(`acc 1: ${await getAccountBalance(client, account)}`);
+  console.log(`acc 2: ${await getAccountBalance(client, account2)}`);
 };
 
 main();
