@@ -4,7 +4,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import * as dotenv from 'dotenv';
-import { AptosAccount } from 'aptos';
+import { AptosAccount, FaucetClient } from 'aptos';
+import { TESTNET_FAUCET_URL, TESTNET_NODE_URL } from 'config';
 
 dotenv.config();
 
@@ -25,9 +26,13 @@ async function createAccountFiles(
 }
 
 const main = async () => {
+  const faucetClient = new FaucetClient(TESTNET_NODE_URL, TESTNET_FAUCET_URL);
+
   for (const accountName of ACCOUNT_NAMES) {
     const account = new AptosAccount();
     const accountData = account.toPrivateKeyObject();
+
+    await faucetClient.fundAccount(account.address(), 100_000_000);
 
     await createAccountFiles(
       process.env.KEY_DIR!,
@@ -40,7 +45,9 @@ const main = async () => {
       `${accountData.privateKeyHex}`
     );
 
-    console.log(`account addr ${accountData.address} created`);
+    console.log(
+      `account addr ${accountData.address} created for ${accountName}`
+    );
   }
 };
 
