@@ -9,7 +9,8 @@
     "transfer": "ts-node -r tsconfig-paths/register build/transfer.js",
     "tx": "ts-node -r tsconfig-paths/register build/transactions/buildTx.js",
     "rs": "ts-node -r tsconfig-paths/register build/account/resources.js",
-    "mod": "ts-node -r tsconfig-paths/register build/account/modules.js"
+    "mod": "ts-node -r tsconfig-paths/register build/account/modules.js",
+    "acc:gen": "ts-node -r tsconfig-paths/register build/account/genAccounts.js"
   },
   "author": "int",
   "license": "LicenseRef-LICENSE",
